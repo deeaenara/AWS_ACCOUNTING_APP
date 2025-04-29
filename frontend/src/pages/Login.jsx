@@ -1,29 +1,28 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
   const { login } = useAuth();
-  const nav = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const nav = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const res = await axios.post('/api/auth/login', { email, password });
+    const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, { email, password });
     login(res.data.user);
-    const role = res.data.user.role;
-    nav(role === 'super_admin' ? '/admin' : '/client');
+    nav(res.data.user.role === 'super_admin' ? '/admin' : '/client');
   };
 
   return (
-    <div className="p-6 max-w-sm mx-auto">
-      <h1 className="text-xl font-bold mb-4">Login</h1>
-      <form onSubmit={handleSubmit}>
-        <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className="mb-2 block w-full border p-2" />
-        <input value={password} onChange={e => setPassword(e.target.value)} type="password" placeholder="Password" className="mb-4 block w-full border p-2" />
-        <button className="bg-primary text-white px-4 py-2 rounded">Login</button>
+    <div className="max-w-md mx-auto mt-20 p-6 shadow-lg bg-white rounded">
+      <h2 className="text-2xl font-bold mb-4">Login</h2>
+      <form onSubmit={handleLogin} className="space-y-4">
+        <input type="email" className="w-full p-2 border" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
+        <input type="password" className="w-full p-2 border" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
+        <button className="bg-primary text-white px-4 py-2 rounded w-full">Login</button>
       </form>
     </div>
   );
