@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: lawfirm-backend
+    env: node
+    buildCommand: npm run build
+    startCommand: node dist/server.js
+    envVars:
+      - key: DATABASE_URL
+        value: your_render_db_url
+      - key: JWT_SECRET
+        value: your_jwt_secret
